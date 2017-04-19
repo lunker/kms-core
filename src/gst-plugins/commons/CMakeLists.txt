@@ -90,6 +90,10 @@ install(
   PUBLIC_HEADER DESTINATION ${INCLUDE_PREFIX}
 )
 
+
+# lunker :: add rabbitmq c-client dependency
+if(FALSE)
+
 if(WIN32)
   set(SOCKET_IMPL "win32")
 else(WIN32)
@@ -131,6 +135,7 @@ install(
   PUBLIC_HEADER DESTINATION ${INCLUDE_PREFIX}
 )
 # end rabbitutils
+endif()
 
 set(KMS_COMMONS_SOURCES
   kmsrtcp.c
@@ -218,12 +223,11 @@ set_property (TARGET kmsgstcommons
     ${gstreamer-rtp-1.5_INCLUDE_DIRS}
 )
 
-add_dependencies(kmsgstcommons kmsrefstruct kmsutils sdputils rabbitutils)
+add_dependencies(kmsgstcommons kmsrefstruct kmsutils sdputils)
 
 target_link_libraries(kmsgstcommons
   kmsutils
   sdputils
-  rabbitutils
   kmsrefstruct
   kmssdpagent
   kmsrtpsync

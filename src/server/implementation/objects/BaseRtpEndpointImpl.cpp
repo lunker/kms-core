@@ -128,7 +128,9 @@ BaseRtpEndpointImpl::updateMediaState (guint new_state)
 {
   std::unique_lock<std::recursive_mutex> lock (mutex);
   std::shared_ptr<MediaState> old_state = current_media_state;
-  auto object = shared_from_this ();
+  std::string sessionId;
+  bool isSessionAlive;
+  auto object = shared_from_this();
 
   switch (new_state) {
   case KMS_MEDIA_DISCONNECTED:
@@ -137,8 +139,23 @@ BaseRtpEndpointImpl::updateMediaState (guint new_state)
     GST_DEBUG ("### Check For KMS Test. Media state :: DISCONNECTED!");
 
     GST_ERROR ("### release media object by MediaStateChanged[DISCONNECTED]");
+
+    sessionId = MediaSet::getMediaSet()->getSessionId ( object.get()->getId() );
+
     MediaSet::getMediaSet()->releaseRelatedComponents (
       object.get()->getParent()->getId() );
+
+    if ( sessionId != "" ) {
+      isSessionAlive = MediaSet::getMediaSet()->isSessionAlive (sessionId);
+
+      if ( isSessionAlive ) {
+        GST_ERROR ("### after release, still session alive");
+      } else {
+        GST_ERROR ("### after release, no alive media component in session ");
+        // erase sessionId in connections.
+
+      }
+    }
 
     break;
 

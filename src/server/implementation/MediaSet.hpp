@@ -92,6 +92,7 @@ public:
   /* lunker:: check session alive */
   bool isSessionAlive (const std::string &sessionId);
   void releaseRelatedComponents (const std::string &mediaObjectId);
+  std::string getSessionId (const std::string &mediaObjectId);
 
 private:
 

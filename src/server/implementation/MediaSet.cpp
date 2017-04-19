@@ -66,6 +66,7 @@ bool MediaSet::isSessionAlive (const std::string &sessionId)
   GST_ERROR ("### MediaSet::isSessionAlive()");
   std::unique_lock <std::recursive_mutex> lock (recMutex);
 
+  /*
   if ( childrenMap.find (sessionId)->second.size() == 0
        && sessionMap.find (sessionId)->second.size() == 0 ) {
     GST_DEBUG ("### objectsMap Size : %d", static_cast<int> (objectsMap.size() ) );
@@ -84,6 +85,44 @@ bool MediaSet::isSessionAlive (const std::string &sessionId)
 
     return true;
   }
+  */
+  if ( sessionMap.find (sessionId)->second.size() == 0 ) {
+    GST_DEBUG ("### objectsMap Size : %d", static_cast<int> (objectsMap.size() ) );
+    GST_DEBUG ("### childrenMap Size : %d",
+               static_cast<int> (childrenMap.find (sessionId)->second.size() ) );
+    GST_DEBUG ("### sessionMap Size : %d",
+               static_cast<int> (sessionMap.find (sessionId)->second.size() ) );
+
+    return false;
+  } else {
+    GST_DEBUG ("### objectsMap Size : %d", static_cast<int> (objectsMap.size() ) );
+    GST_DEBUG ("### childrenMap Size : %d",
+               static_cast<int> (childrenMap.find (sessionId)->second.size() ) );
+    GST_DEBUG ("### sessionMap Size : %d",
+               static_cast<int> (sessionMap.find (sessionId)->second.size() ) );
+
+    return true;
+  }
+
+}
+
+/* get object related session id */
+std::string MediaSet::getSessionId (const std::string &mediaObjectId)
+{
+
+  GST_ERROR ("### MediaSet::getSessionId()");
+
+  if (mediaObjectId != "" ) {
+    GST_DEBUG ("### related session number : %d",
+               static_cast<int> (reverseSessionMap.find (mediaObjectId)->second.size() ) );
+    GST_DEBUG ("### related session Id : %s",
+               reverseSessionMap.find ( mediaObjectId)->second.begin()->c_str() );
+
+    return * (reverseSessionMap.find (mediaObjectId)->second.begin() );
+  } else {
+    return "";
+  }
+
 }
 
 void MediaSet::releaseRelatedComponents (const std::string &mediaObjectId)
